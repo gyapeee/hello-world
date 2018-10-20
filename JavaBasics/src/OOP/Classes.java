@@ -78,20 +78,20 @@ public class Classes {
 		// TODO Auto-generated method stub
 		Lamp tableLamp = new Lamp();
 		
-		System.out.println(tableLamp.getStateOfLight() + " :Light State of a new lamp");
-		System.out.println(tableLamp.getStateOfPlug() + " :Plug State of a new lamp");
+		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
+		System.out.println(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
 		tableLamp.toggleLamp();
-		System.out.println(tableLamp.getStateOfLight() + " :Light State of a new lamp after toggled without connecting the plug");
+		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after toggled without connecting the plug");
 		tableLamp.changePlugConnection(PlugState.PluggedOut);
-		System.out.println(tableLamp.getStateOfLight() + " :Light State of a new lamp after plugged out" );
+		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged out" );
 		tableLamp.changePlugConnection(PlugState.PluggedIn);
-		System.out.println(tableLamp.getStateOfLight() + " :Light State of a new lamp after plugged in");
+		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in");
 		
 		/** Playing with the lamp  */
 		int count = 0;
 		while( count < 10 ){
 			tableLamp.toggleLamp();
-			System.out.println(tableLamp.getStateOfLight() + " :Light State of a new lamp after plugged in" );
+			System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in" );
 			count++;
 		}
 		
