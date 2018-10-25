@@ -26,11 +26,57 @@ enum PlugState{
 	PluggedOut
 }
 
-class Lamp{
+enum BatteryVoltage{
+	MaxVoltage,
+	MidVoltage,
+	MinVoltage,
+	LowVoltage,
+	EmptyBattery
+}
+
+abstract class Lamp{
 	/** State of the light */
 	private LightState light;
+
+	
+	/** Toggle the light  */
+	abstract void toggleLamp();
+	
+
+	
+	/** Get the current state of the light */
+	public LightState getStateOfLight() {
+		return light;
+	}
+	
+	
+	/** Constructor for initialize the plug and light states */
+	public Lamp() {
+		light = LightState.Off;			/* Without it the value of the light is null */
+	}
+}
+
+class FlashLight extends Lamp{
+	
+}
+
+class TableLamp extends Lamp{
 	/** State of the plug */
 	private PlugState plug;
+	
+	/** Get the current state of the plug */
+	public PlugState getStateOfPlug() {
+		return plug;
+	}
+	
+	/** Plug in or out the Lamp to or from the electrical network */
+	public void changePlugConnection( PlugState aNewPlugState ) {
+		if ( plug != aNewPlugState ) {
+			plug = aNewPlugState;
+			System.out.println("The lamp is " + plug.toString());
+		}
+		
+	}
 	
 	/** Toggle the light when it is plugged in */
 	public void toggleLamp() {
@@ -45,32 +91,10 @@ class Lamp{
 		}
 	}
 	
-	/** Plug in or out the Lamp to or from the electrical network */
-	public void changePlugConnection( PlugState aNewPlugState ) {
-		if ( plug != aNewPlugState ) {
-			plug = aNewPlugState;
-			System.out.println("The lamp is " + plug.toString());
-		}
-		
-	}
-	
-	/** Get the current state of the light */
-	public LightState getStateOfLight() {
-		return light;
-	}
-	
-	/** Get the current state of the plug */
-	public PlugState getStateOfPlug() {
-		return plug;
-	}
-	
-	/** Constructor for initialize the plug and light states */
-	public Lamp() {
-		light = LightState.Off;			/* Without it the value of the light is null */
+	public TableLamp(){
 		plug = PlugState.PluggedOut; 	/* Without it the value of the plug is null */
 	}
 }
-
 
 public class Classes {
 
