@@ -37,28 +37,30 @@ enum BatteryVoltage{
 abstract class Lamp{
 	/** State of the light */
 	private LightState light;
-
+	
 	
 	/** Toggle the light  */
 	abstract void toggleLamp();
 	
-
-	
 	/** Get the current state of the light */
 	public LightState getStateOfLight() {
-		return light;
+		return this.light;
 	}
 	
+	/** Set the current state of the light */
+	protected void setStateOfLight( LightState aNewLightState ) {
+		this.light = aNewLightState;
+	}
 	
 	/** Constructor for initialize the plug and light states */
 	public Lamp() {
-		light = LightState.Off;			/* Without it the value of the light is null */
+		this.light = LightState.Off;			/* Without it the value of the light is null */
 	}
 }
 
-class FlashLight extends Lamp{
-	
-}
+//class FlashLight extends Lamp{
+//	
+//}
 
 class TableLamp extends Lamp{
 	/** State of the plug */
@@ -66,14 +68,14 @@ class TableLamp extends Lamp{
 	
 	/** Get the current state of the plug */
 	public PlugState getStateOfPlug() {
-		return plug;
+		return this.plug;
 	}
 	
 	/** Plug in or out the Lamp to or from the electrical network */
 	public void changePlugConnection( PlugState aNewPlugState ) {
-		if ( plug != aNewPlugState ) {
-			plug = aNewPlugState;
-			System.out.println("The lamp is " + plug.toString());
+		if ( this.plug != aNewPlugState ) {
+			this.plug = aNewPlugState;
+			System.out.println("The lamp is " + this.plug.toString());
 		}
 		
 	}
@@ -81,13 +83,13 @@ class TableLamp extends Lamp{
 	/** Toggle the light when it is plugged in */
 	public void toggleLamp() {
 		if (PlugState.PluggedIn == plug) {
-			if ( LightState.On == light ){
-				light = LightState.Off;
+			if ( LightState.On == this.getStateOfLight() ){
+				this.setStateOfLight(LightState.Off);
 			}
 			else{
-				light = LightState.On;
+				this.setStateOfLight(LightState.On);
 			}
-			System.out.println("The Lamp is toggled. The light is " + light.toString());
+			System.out.println("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
 		}
 	}
 	
@@ -100,7 +102,8 @@ public class Classes {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Lamp tableLamp = new Lamp();
+		//Lamp tableLamp = new Lamp(); /* Cannot instantiate Lamp because it has an abstract method */
+		TableLamp tableLamp = new TableLamp();
 		
 		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
 		System.out.println(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
