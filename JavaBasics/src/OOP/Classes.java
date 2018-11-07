@@ -1,5 +1,10 @@
 package OOP;
 
+// Test the static import which let the user to use constants(static final variables) without fully qualified names
+import static LearnImport.ConstantsOfOOP.*;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Object: anything which has states and behaviors
  * 	  eg.: Lamp: 
@@ -14,6 +19,8 @@ package OOP;
  * 					PlugOut(Plugs in the lamp's wire from the electrical network, Does nothing when it has been plugged out)	
  * 
  * */
+
+
 
 // Can't have more than one public class/enum/interface JVM cannot understand it
 /*public*/ enum LightState{
@@ -61,14 +68,42 @@ abstract class Lamp{
 class FlashLight extends Lamp{
 
 	private double currentLux;
-	static final double LUX_OF_MAX_VOLTAGE = 12.35;
-	static final double LUX_OF_MID_VOLTAGE = 7.135;
-	static final double LUX_OF_MIN_VOLTAGE = 5.45;
-	static final double LUX_OF_LOW_VOLTAGE = 3.01;
-	static final double LUX_OF_EMPTY = 0.0;
+	private Timer voltageTimer;
+	private TimerTask voltageTask;
+
 	
 	public double getCurrentLux() {
-		return currentLux;
+		return this.currentLux;
+	}
+	
+	public FlashLight(){
+		this.currentLux = LUX_OF_EMPTY;
+		this.voltageTimer = new Timer("VoltageTimer");
+		/** AnonymusClass*/
+		this.voltageTask = new TimerTask() {
+			public void run() {
+				System.out.println("The current lux is " + currentLux);
+				System.out.println("Thread's name is "+Thread.currentThread().getName());
+				if ( LUX_OF_EMPTY == currentLux) {
+					cancel();
+				}
+			}
+		};
+		
+		long delay = 10000L; /* 10s */
+		long period = 1000L; /* 1s */
+		
+		this.voltageTimer.schedule(this.voltageTask, delay, period);
+	}
+	
+	public void toggleLamp() {
+		if ( LightState.On == this.getStateOfLight() ){
+			this.setStateOfLight(LightState.Off);
+		}
+		else{
+			this.setStateOfLight(LightState.On);
+		}
+		System.out.println("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
 	}
 }
 
@@ -132,6 +167,7 @@ public class Classes {
 			count++;
 		}
 		
+		FlashLight flashLight = new FlashLight();
 	}
 
 }
