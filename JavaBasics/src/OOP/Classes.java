@@ -84,8 +84,21 @@ class FlashLight extends Lamp{
 			public void run() {
 				System.out.println("The current lux is " + currentLux);
 				System.out.println("Thread's name is "+Thread.currentThread().getName());
-				if ( LUX_OF_EMPTY == currentLux) {
+				/** Floating point equality test to finish the Thread */
+				if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
 					cancel();
+					System.out.println("Thread is canceled!");	
+				}
+				/** Decrementing battery */
+				else
+				{
+					if ( LightState.On == getStateOfLight() ) {
+						currentLux -= 0.1;
+					}
+					else
+					{
+						currentLux -= 0.0001;
+					}
 				}
 			}
 		};
@@ -168,6 +181,7 @@ public class Classes {
 		}
 		
 		FlashLight flashLight = new FlashLight();
+		
 	}
 
 }
