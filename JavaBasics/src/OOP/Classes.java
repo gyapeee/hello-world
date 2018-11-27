@@ -5,6 +5,10 @@ import static LearnImport.ConstantsOfOOP.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import LearnImport.ConstantsOfOOP;
+
+import java.util.EnumMap;
+
 /**
  * Object: anything which has states and behaviors
  * 	  eg.: Lamp: 
@@ -68,45 +72,70 @@ abstract class Lamp{
 class FlashLight extends Lamp{
 
 	private double currentLux;
+	private BatteryVoltage currentVoltage;
 	private Timer voltageTimer;
 	private TimerTask voltageTask;
+	private EnumMap<BatteryVoltage, Double> voltageLuxMap; /* Calculating with Double is slower than basic double */
 
 	
 	public double getCurrentLux() {
 		return this.currentLux;
 	}
 	
+	public BatteryVoltage getCurrentBatteryVoltage() {
+		return this.currentVoltage;
+	}
+	
+	public void setBatteryVoltage( BatteryVoltage aVoltage ) {
+		this.currentVoltage = aVoltage;
+		this.currentLux = this.voltageLuxMap.get(this.currentVoltage);
+	}
+	
 	public FlashLight(){
-		this.currentLux = LUX_OF_EMPTY;
+		this.voltageLuxMap = new EnumMap<BatteryVoltage, Double>(BatteryVoltage.class);
+		this.voltageLuxMap.put(BatteryVoltage.EmptyBattery, LUX_OF_EMPTY);
+		this.voltageLuxMap.put(BatteryVoltage.LowVoltage,	LUX_OF_LOW_VOLTAGE);
+		this.voltageLuxMap.put(BatteryVoltage.MinVoltage, 	LUX_OF_MIN_VOLTAGE);
+		this.voltageLuxMap.put(BatteryVoltage.MidVoltage, 	LUX_OF_MID_VOLTAGE);
+		this.voltageLuxMap.put(BatteryVoltage.MaxVoltage, 	LUX_OF_MAX_VOLTAGE);
+		
+		this.currentLux = this.voltageLuxMap.get(BatteryVoltage.EmptyBattery);
+		this.currentVoltage = BatteryVoltage.EmptyBattery;
+		
 		this.voltageTimer = new Timer("VoltageTimer");
-		/** AnonymusClass*/
+		
+		/** AnonymusClass 
+		 * 	Documentation: https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html */
 		this.voltageTask = new TimerTask() {
 			public void run() {
 				System.out.println("The current lux is " + currentLux);
-				System.out.println("Thread's name is "+Thread.currentThread().getName());
+				System.out.println("Thread's name is " + Thread.currentThread().getName());
 				/** Floating point equality test to finish the Thread */
 				if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
 					cancel();
-					System.out.println("Thread is canceled!");	
+					System.out.println("Thread is canceled! Application is exiting.");	
+					System.exit(0);
 				}
 				/** Decrementing battery */
 				else
 				{
 					if ( LightState.On == getStateOfLight() ) {
-						currentLux -= 0.1;
+						currentLux -= 1;
 					}
 					else
 					{
-						currentLux -= 0.0001;
+						currentLux -= 0.01;
 					}
 				}
 			}
 		};
 		
-		long delay = 10000L; /* 10s */
-		long period = 1000L; /* 1s */
+		long delay = 1000L; /* 1s */
+		long period = 1L; /* 1ms */
 		
 		this.voltageTimer.schedule(this.voltageTask, delay, period);
+		
+		this.setBatteryVoltage(BatteryVoltage.MaxVoltage);
 	}
 	
 	public void toggleLamp() {
@@ -134,8 +163,7 @@ class TableLamp extends Lamp{
 		if ( this.plug != aNewPlugState ) {
 			this.plug = aNewPlugState;
 			System.out.println("The lamp is " + this.plug.toString());
-		}
-		
+		}	
 	}
 	
 	/** Toggle the light when it is plugged in */
@@ -163,6 +191,7 @@ public class Classes {
 		//Lamp tableLamp = new Lamp(); /* Cannot instantiate Lamp because it has an abstract method */
 		TableLamp tableLamp = new TableLamp();
 		
+		/** Checking basic functions of tableLamp */
 		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
 		System.out.println(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
 		tableLamp.toggleLamp();
@@ -180,6 +209,7 @@ public class Classes {
 			count++;
 		}
 		
+		/** Creating a new thread for FlashLight  */
 		FlashLight flashLight = new FlashLight();
 		
 	}
