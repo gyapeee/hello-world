@@ -10,4 +10,5 @@ public class ConstantsOfOOP {
 	public static final double LUX_OF_MIN_VOLTAGE = 5.45;
 	public static final double LUX_OF_LOW_VOLTAGE = 3.01;
 	public static final double LUX_OF_EMPTY = 0.0;
+	public static final double EPSILON = 0.001;
 }

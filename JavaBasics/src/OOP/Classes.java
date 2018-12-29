@@ -45,6 +45,11 @@ enum BatteryVoltage{
 	EmptyBattery
 }
 
+/**
+ * Basic OOP parent class:
+ * 			each and every child class will inherit these 
+ * 			states(variables eg. light)	and behaviors(methods eg. toggleLamp())
+ * */
 abstract class Lamp{
 	/** State of the light */
 	private LightState light;
@@ -69,6 +74,11 @@ abstract class Lamp{
 	}
 }
 
+/**
+ * Basic OOP child class:
+ * 			Here are more states(eg. currentLux) and behaviors(eg. getCurrentLux()).
+ * 
+ * */
 class FlashLight extends Lamp{
 
 	private double currentLux;
@@ -91,6 +101,9 @@ class FlashLight extends Lamp{
 		this.currentLux = this.voltageLuxMap.get(this.currentVoltage);
 	}
 	
+	/*
+	 * Constructor
+	 * */
 	public FlashLight(){
 		this.voltageLuxMap = new EnumMap<BatteryVoltage, Double>(BatteryVoltage.class);
 		this.voltageLuxMap.put(BatteryVoltage.EmptyBattery, LUX_OF_EMPTY);
@@ -110,10 +123,11 @@ class FlashLight extends Lamp{
 			public void run() {
 				System.out.println("The current lux is " + currentLux);
 				System.out.println("Thread's name is " + Thread.currentThread().getName());
+				System.out.println("Thread's ID is " + Thread.currentThread().getId());
 				/** Floating point equality test to finish the Thread */
 				if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
 					cancel();
-					System.out.println("Thread is canceled! Application is exiting.");	
+					System.out.println("Flat battery. Thread is canceled! Application is exiting.");	
 					System.exit(0);
 				}
 				/** Decrementing battery */
@@ -125,6 +139,12 @@ class FlashLight extends Lamp{
 					else
 					{
 						currentLux -= 0.01;
+					}
+					
+					/** Generate an exception when the thread ID divisable by 2 */
+					if ( 0L == (Thread.currentThread().getId() % 2L) ){
+						System.out.println("Division by zero");
+						long divisionByZero = 10L / 0L;
 					}
 				}
 			}
@@ -210,7 +230,12 @@ public class Classes {
 		}
 		
 		/** Creating a new thread for FlashLight  */
-		FlashLight flashLight = new FlashLight();
+		FlashLight flashLight0 = new FlashLight();
+		FlashLight flashLight1 = new FlashLight();
+		FlashLight flashLight2 = new FlashLight();
+		FlashLight flashLight3 = new FlashLight();
+		
+
 		
 	}
 
