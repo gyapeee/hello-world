@@ -5,9 +5,15 @@ import static LearnImport.ConstantsOfOOP.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import LearnImport.ConstantsOfOOP;
+//import LearnImport.ConstantsOfOOP;
 
 import java.util.EnumMap;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+// https://www.slf4j.org/manual.html#swapping
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Object: anything which has states and behaviors
@@ -53,6 +59,7 @@ enum BatteryVoltage{
 abstract class Lamp{
 	/** State of the light */
 	private LightState light;
+	protected Logger logger;
 	
 	
 	/** Toggle the light  */
@@ -71,6 +78,7 @@ abstract class Lamp{
 	/** Constructor for initialize the plug and light states */
 	public Lamp() {
 		this.light = LightState.Off;			/* Without it the value of the light is null */
+		this.logger = LoggerFactory.getLogger(Lamp.class);
 	}
 }
 
@@ -86,6 +94,7 @@ class FlashLight extends Lamp{
 	private Timer voltageTimer;
 	private TimerTask voltageTask;
 	private EnumMap<BatteryVoltage, Double> voltageLuxMap; /* Calculating with Double is slower than basic double */
+	
 
 	
 	public double getCurrentLux() {
@@ -105,6 +114,7 @@ class FlashLight extends Lamp{
 	 * Constructor
 	 * */
 	public FlashLight(){
+		this.logger.info(this.getClass().getName() + "is created");
 		this.voltageLuxMap = new EnumMap<BatteryVoltage, Double>(BatteryVoltage.class);
 		this.voltageLuxMap.put(BatteryVoltage.EmptyBattery, LUX_OF_EMPTY);
 		this.voltageLuxMap.put(BatteryVoltage.LowVoltage,	LUX_OF_LOW_VOLTAGE);
@@ -121,31 +131,38 @@ class FlashLight extends Lamp{
 		 * 	Documentation: https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html */
 		this.voltageTask = new TimerTask() {
 			public void run() {
-				System.out.println("The current lux is " + currentLux);
-				System.out.println("Thread's name is " + Thread.currentThread().getName());
-				System.out.println("Thread's ID is " + Thread.currentThread().getId());
-				/** Floating point equality test to finish the Thread */
-				if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
-					cancel();
-					System.out.println("Flat battery. Thread is canceled! Application is exiting.");	
-					System.exit(0);
+				try {
+					System.out.println("The current lux is " + currentLux);
+					System.out.println("Thread's name is " + Thread.currentThread().getName());
+					System.out.println("Thread's ID is " + Thread.currentThread().getId());
+					/** Floating point equality test to finish the Thread */
+					if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
+						cancel();
+						System.out.println("Flat battery. Thread is canceled! Application is exiting.");	
+						System.exit(0);
+					}
+					/** Decrementing battery */
+					else{
+						if ( LightState.On == getStateOfLight() ) {
+							currentLux -= 1; /* switched on reduction */
+						}
+						else {
+							currentLux -= 0.01; /* idle reduction */
+						}
+	/** BEGIN This is only for generating an exception */					
+						/** Generate an exception when the seconds of current local time divisable by 5 */
+						//System.out.println(LocalTime.now().getSecond());
+						if ( 0L == (LocalTime.now().getSecond() % 5L) ){
+							//System.out.println("Division by zero");
+							long divisionByZero = 10L / 0L;
+						}
+	/** END This is only for generating an exception */
+					}
 				}
-				/** Decrementing battery */
-				else
-				{
-					if ( LightState.On == getStateOfLight() ) {
-						currentLux -= 1;
-					}
-					else
-					{
-						currentLux -= 0.01;
-					}
-					
-					/** Generate an exception when the thread ID divisable by 2 */
-					if ( 0L == (Thread.currentThread().getId() % 2L) ){
-						System.out.println("Division by zero");
-						long divisionByZero = 10L / 0L;
-					}
+				catch (Exception e) {
+					System.out.println(e.getMessage());
+					cancel();
+					System.exit(0);
 				}
 			}
 		};
@@ -200,6 +217,7 @@ class TableLamp extends Lamp{
 	}
 	
 	public TableLamp(){
+		this.logger.info(this.getClass().getName() + " is created");
 		plug = PlugState.PluggedOut; 	/* Without it the value of the plug is null */
 	}
 }
@@ -210,7 +228,7 @@ public class Classes {
 		// TODO Auto-generated method stub
 		//Lamp tableLamp = new Lamp(); /* Cannot instantiate Lamp because it has an abstract method */
 		TableLamp tableLamp = new TableLamp();
-		
+
 		/** Checking basic functions of tableLamp */
 		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
 		System.out.println(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
@@ -228,13 +246,13 @@ public class Classes {
 			System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in" );
 			count++;
 		}
-		
 		/** Creating a new thread for FlashLight  */
+		/*
 		FlashLight flashLight0 = new FlashLight();
 		FlashLight flashLight1 = new FlashLight();
 		FlashLight flashLight2 = new FlashLight();
 		FlashLight flashLight3 = new FlashLight();
-		
+*/
 
 		
 	}

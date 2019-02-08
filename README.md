@@ -6,6 +6,7 @@ this is a line which was added at the first branch
 
 Actually this is a training repository to learn basic java stuffs.
 
+-------------------Requirements-------------------
 
 Additional features:
 
@@ -14,6 +15,6 @@ Log file
  - Try to open that file. If the file is missing, then create one to a default location via exception handling. 
  
 Exception handling
-- Create and exception when the modulo 2 of thread ID is 0
+- Create an exception when the modulo 5 of thread ID is 0
  - Catch that exception and write a message to the log file and to the console also.
 	
