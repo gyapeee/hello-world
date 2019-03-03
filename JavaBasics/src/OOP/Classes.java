@@ -75,10 +75,16 @@ abstract class Lamp{
 		this.light = aNewLightState;
 	}
 	
+	/** Getter for the logger */
+	public Logger getLogger() {
+		return this.logger;
+	}
+	
 	/** Constructor for initialize the plug and light states */
 	public Lamp() {
 		this.light = LightState.Off;			/* Without it the value of the light is null */
 		this.logger = LoggerFactory.getLogger(Lamp.class);
+		
 	}
 }
 
@@ -114,7 +120,7 @@ class FlashLight extends Lamp{
 	 * Constructor
 	 * */
 	public FlashLight(){
-		this.logger.info(this.getClass().getName() + "is created");
+		this.logger.info(this.getClass().getName() + " is created");
 		this.voltageLuxMap = new EnumMap<BatteryVoltage, Double>(BatteryVoltage.class);
 		this.voltageLuxMap.put(BatteryVoltage.EmptyBattery, LUX_OF_EMPTY);
 		this.voltageLuxMap.put(BatteryVoltage.LowVoltage,	LUX_OF_LOW_VOLTAGE);
@@ -132,13 +138,13 @@ class FlashLight extends Lamp{
 		this.voltageTask = new TimerTask() {
 			public void run() {
 				try {
-					System.out.println("The current lux is " + currentLux);
-					System.out.println("Thread's name is " + Thread.currentThread().getName());
-					System.out.println("Thread's ID is " + Thread.currentThread().getId());
+					logger.trace("The current lux is " + currentLux);
+					logger.trace("Thread's name is " + Thread.currentThread().getName());
+					logger.trace("Thread's ID is " + Thread.currentThread().getId());
 					/** Floating point equality test to finish the Thread */
 					if ( Math.abs( LUX_OF_EMPTY - currentLux ) < EPSILON ) {
 						cancel();
-						System.out.println("Flat battery. Thread is canceled! Application is exiting.");	
+						logger.info("Flat battery. Thread is canceled! Application is exiting.");	
 						System.exit(0);
 					}
 					/** Decrementing battery */
@@ -151,16 +157,16 @@ class FlashLight extends Lamp{
 						}
 	/** BEGIN This is only for generating an exception */					
 						/** Generate an exception when the seconds of current local time divisable by 5 */
-						//System.out.println(LocalTime.now().getSecond());
+						//logger.trace(LocalTime.now().getSecond());
 						if ( 0L == (LocalTime.now().getSecond() % 5L) ){
-							//System.out.println("Division by zero");
+							//logger.trace("Division by zero");
 							long divisionByZero = 10L / 0L;
 						}
 	/** END This is only for generating an exception */
 					}
 				}
 				catch (Exception e) {
-					System.out.println(e.getMessage());
+					logger.error(e.getMessage());
 					cancel();
 					System.exit(0);
 				}
@@ -182,7 +188,7 @@ class FlashLight extends Lamp{
 		else{
 			this.setStateOfLight(LightState.On);
 		}
-		System.out.println("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
+		this.logger.info("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
 	}
 }
 
@@ -199,7 +205,7 @@ class TableLamp extends Lamp{
 	public void changePlugConnection( PlugState aNewPlugState ) {
 		if ( this.plug != aNewPlugState ) {
 			this.plug = aNewPlugState;
-			System.out.println("The lamp is " + this.plug.toString());
+			this.logger.info("The lamp is " + this.plug.toString());
 		}	
 	}
 	
@@ -212,12 +218,12 @@ class TableLamp extends Lamp{
 			else{
 				this.setStateOfLight(LightState.On);
 			}
-			System.out.println("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
+			this.logger.trace("The Lamp is toggled. The light is " + this.getStateOfLight().toString());
 		}
 	}
 	
 	public TableLamp(){
-		this.logger.info(this.getClass().getName() + " is created");
+		this.logger.trace(this.getClass().getName() + " is created");
 		plug = PlugState.PluggedOut; 	/* Without it the value of the plug is null */
 	}
 }
@@ -230,29 +236,30 @@ public class Classes {
 		TableLamp tableLamp = new TableLamp();
 
 		/** Checking basic functions of tableLamp */
-		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
-		System.out.println(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
+		tableLamp.getLogger().trace(tableLamp.getStateOfLight() + " \t:Light State of a new lamp");
+		tableLamp.getLogger().trace(tableLamp.getStateOfPlug() + " \t:Plug State of a new lamp");
 		tableLamp.toggleLamp();
-		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after toggled without connecting the plug");
+		tableLamp.getLogger().trace(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after toggled without connecting the plug");
 		tableLamp.changePlugConnection(PlugState.PluggedOut);
-		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged out" );
+		tableLamp.getLogger().trace(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged out" );
 		tableLamp.changePlugConnection(PlugState.PluggedIn);
-		System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in");
+		tableLamp.getLogger().trace(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in");
 		
 		/** Playing with the lamp  */
-		int count = 0;
-		while( count < 10 ){
-			tableLamp.toggleLamp();
-			System.out.println(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in" );
-			count++;
-		}
+//		int count = 0;
+//		while( count < 10 ){
+//			tableLamp.toggleLamp();
+//			tableLamp.getLogger().info(tableLamp.getStateOfLight() + " \t:Light State of a new lamp after plugged in" );
+//			count++;
+//		}
 		/** Creating a new thread for FlashLight  */
-		/*
+
 		FlashLight flashLight0 = new FlashLight();
 		FlashLight flashLight1 = new FlashLight();
 		FlashLight flashLight2 = new FlashLight();
 		FlashLight flashLight3 = new FlashLight();
-*/
+		FlashLight flashLight4 = new FlashLight();
+
 
 		
 	}
