@@ -18,3 +18,7 @@ Exception handling
 - Create an exception when the modulo 5 of thread ID is 0
  - Catch that exception and write a message to the log file and to the console also.
 	
+-------------------HowTos-------------------
+---Running released application---
+e:\Munka\Eclipse_Workspace\hello-world\JavaBasics\release>java -jar JavaBasics.jar
+----------------------------------
