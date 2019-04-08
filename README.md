@@ -13,6 +13,7 @@ Additional features:
 Log file
 - Open a file from argument and save the log to it. Each and every new and old print lines shall be written to the log.
  - Try to open that file. If the file is missing, then create one to a default location via exception handling. 
+- Logger shall be a static class variable with initialization via a static block
  
 Exception handling
 - Create an exception when the modulo 5 of thread ID is 0
